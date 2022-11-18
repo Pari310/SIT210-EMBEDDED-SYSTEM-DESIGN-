@@ -1,0 +1,42 @@
+#external module imports
+import smbus as bus
+import time
+
+bus = smbus.SMBus(1)
+
+BH1750 = 0x23 ## pre defined address of Light sensor
+reciever = 0x20 ## receiver address of I2C.
+
+
+def Light(): 
+    address = bus.read_i2c_block_data(BH1750,reciever)
+    value = (address[1] + (256 * address[0])) # convert 2 bytes of data to decimal
+    return value
+
+def main():
+    while True:
+        light_value =Light()
+
+        if(light_value >= 1300):
+            print("TOO BRIGHT")
+            print(light_value)
+            
+        elif(light_value >= 800 and light_value < 1300):
+            print("BRIGHT")
+            print(light_value) 
+            
+        elif(light_value > 300 and light_value < 800):
+            print("MEDIUM")
+            print(light_value)
+            
+        elif(light_value < 50 and light_value > 300):
+            print("DARK")
+            print(light_value)
+            
+        else:
+            print("TOO DARK")
+            print(light_value)
+     
+        time.sleep(1)
+
+main()  #loop forever
