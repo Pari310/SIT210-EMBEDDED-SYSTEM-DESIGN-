@@ -1,0 +1,195 @@
+from tkinter import *
+import tkinter.font
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+from gpiozero import LED
+from time import sleep
+
+## hardware
+blink_led = LED(14)
+
+## GUI DEFINITIONS
+win = Tk()
+win.title("MORSE CODE CONVERTER")
+myFont = tkinter.font.Font(family='Times', size=15, weight= "bold", slant= "italic")
+
+## EVENT FUNCTIONS
+def dot():
+    blink_led.on()
+    sleep(0.25)
+    blink_led.off()
+    sleep(0.25)
+
+
+def dash():
+    blink_led.on()
+    sleep(0.75)
+    blink_led.off()
+    sleep(.25)
+
+def MorseCode():
+    result = text.get()
+    result = result.upper()
+    
+    if (len(result) <= 12):
+        for input in result:
+                       
+            if (input == 'A'):
+                dot()
+                dash()
+    
+            elif (input == 'B'):
+                dash()
+                dot()
+                dot()
+                dot()
+    
+            elif (input == 'C'):
+                dash()
+                dot()
+                dash()
+                dot()
+      
+            elif (input == 'D'):
+                dash()
+                dot()
+                dot()
+
+            elif (input == 'E'):
+                dot()
+    
+            elif (input == 'F'):
+                dot()
+                dot()
+                dot()
+                dash()
+
+            elif (input == 'G'):
+                dash()
+                dot()
+                dot()
+
+            elif (input == 'H'):
+                dot()
+                dot()
+                dot()
+                dot()
+
+            elif (input == 'I'):
+                dot()
+                dot()
+
+            elif (input == 'J'):
+                dot()
+                dash()
+                dash()
+                dash()
+
+            elif (input == 'K'):
+                dash()
+                dot()
+                dash()
+
+            elif (input == 'L'):
+                dot()
+                dash()
+                dot()
+                dot()
+
+            elif (input == 'M'):
+                dash()
+                dash()
+
+            elif (input == 'N'):
+                dash()
+                dot()
+
+            elif (input == 'O'):
+                dash()
+                dash()
+                dash()
+
+            elif (input == 'P'):
+                dot()
+                dash()
+                dash()
+                dot()
+
+            elif (input == 'Q'):   
+                dash()
+                dash()
+                dot()
+                dash()
+
+            elif (input == 'R'):
+                dot()
+                dash()
+                dot()
+
+            elif (input == 'S'):
+                dot()
+                dot()
+                dot()
+
+            elif (input == 'T'):
+                dash()
+
+            elif (input == 'U'):
+                dot()
+                dot()
+                dash()
+
+            elif (input == 'V'):
+                dot()
+                dot()
+                dot()
+                dash()
+
+            elif (input == 'W'):
+                dot()
+                dash()
+                dash()
+
+            elif (input == 'X'):
+                dash()
+                dot()
+                dot()
+                dash()
+
+            elif (input == 'Y'):
+                dash()
+                dot()
+                dash()
+                dash()
+    
+            elif (input == 'Z'):
+                dash()
+                dash()
+                dot()
+                dot()
+
+            elif (input == ' '):
+                sleep(0.75)
+
+        else:
+            print("Not more than 12 characters")
+
+
+def close():
+    GPIO.cleanup()
+    win.destroy()
+
+Label(win, text="Enter A word *Max 12 Char* ", bg = "white").grid(row=0, column=0)
+text = Entry(win)
+text.grid(row = 1, column = 0)
+
+
+MorseButton = Button(win, text = "Morse Convert", font = myFont, command = MorseCode, bg = "green", height = 1, width = 24)
+MorseButton.grid(row = 2, column = 0)
+
+
+exitButton = Button(win, text = "Exit", font = myFont, command = close, bg = "red", height = 1, width = 24)
+exitButton.grid(row = 3, column = 0)
+
+##loop forever
+win.mainloop() 
