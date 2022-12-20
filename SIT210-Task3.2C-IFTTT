@@ -116,12 +116,12 @@ void loop() {
   Serial.print("Light: ");
   Serial.println(intensity);
   delay(250);
-  if (intensity < 600 && light == 0)
+  if (intensity < 600)
   {
     light = 1;
     shade();
   }
-  else if (intensity > 600 && light == 1)
+  else if (intensity > 600)
   {
     light = 0;
     sunlight();
