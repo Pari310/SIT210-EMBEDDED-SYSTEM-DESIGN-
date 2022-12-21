@@ -3,12 +3,12 @@ import RPi.GPIO as GPIO  #To communicate with the GPIO pins
 import time  #time variable for ultrasonic sensor to calculate distance
 from gpiozero import LED  #for LED functions
 
-GPIO.setup(GPIO.BCM)  #setting the gpio mode to BCM
+GPIO.setmode(GPIO.BCM)  #setting the gpio mode to BCM
 GPIO.setwarnings(False)  #disable warnings
 
 #Global variables for the board 
-TRIG_PIN =18
-ECHO_PIN = 12
+TRIG_PIN =19
+ECHO_PIN = 24
 LED = 12
 
 #Setting up the variables 
@@ -18,7 +18,7 @@ GPIO.setup(LED,GPIO.OUT)
 
 
 LED_PWM = GPIO.PWM(LED,125)  #Creates an PWM instance and assigns it to variable led
-LED_PWM.start(0)  #start led with u=initial duty cycle 0 (no glow)
+LED_PWM.start(0)  #start led with initial duty cycle 0 (no glow)
 
 
 #distance variable
@@ -29,35 +29,44 @@ max_distance = 50
 #function for calculating the distance of the object from the sensor
 def calculate_dis():
 
-    #Calculating the distance of object is done by sending a pulse
+    ##Calculating the distance of object is done by sending a pulse
+    #set trigger to high
     GPIO.output(TRIG_PIN,True)
-    time.sleep(0.001)
+    
+    #set trigger low after 0.01ms
+    time.sleep(0.00001)
     GPIO.output(TRIG_PIN,False)
 
+    #save start time
     while GPIO.input(ECHO_PIN) == 0:
         start = time.time()
 
+    #save stop time
     while GPIO.input(ECHO_PIN)==1:
         stop = time.time()
     
     #total duration is time taken by pulse to travel from sensor to object and object to sensor in a loop
     Totaltime = stop - start
 
-    #distance calculated using formula (speed* time)  [speed=speed of sound in air/2]
+    #distance calculated using formula (speed* time) 
+    #speed=speed of sound in air 34300 cm/s divided by 2 (back and forth)
     distance = (Totaltime*34300)/2
     
     return distance
 
-try:
-    while True:
+if __name__ == '__main__':
+    try:
+        while True:
 
-        distance = calculate_dis()
+            distance = calculate_dis()
 
-        if distance<= max_distance:
-            LED_PWM.ChangeDutyCycle(max_distance - (distance))  #change duty cycle of led 
+            if distance<= max_distance:
+                LED_PWM.ChangeDutyCycle(max_distance - (distance))  #change duty cycle of led 
 
-        else:
-            LED_PWM.ChangeDutyCycle(0)
+            else:
+                LED_PWM.ChangeDutyCycle(0)
 
-except KeyboardInterrupt:
-    GPIO.cleanup()
+    #Reset 
+    except KeyboardInterrupt:
+        LED_PWM.stop()
+        GPIO.cleanup()
